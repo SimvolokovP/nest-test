@@ -48,5 +48,16 @@ export class UsersService {
     throw new HttpException('user or role not defind', HttpStatus.NOT_FOUND);
   }
 
-  async banUser(userDto: BanUserDto) {}
+  async banUser(userDto: BanUserDto) {
+    const user = await this.userRepository.findByPk(userDto.userId);
+
+    if (user) {
+      user.banned = true;
+      user.banReason = userDto.reason;
+      user.save();
+      return user;
+    }
+    
+    throw new HttpException('user not defind', HttpStatus.NOT_FOUND);
+  }
 }
